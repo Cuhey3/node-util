@@ -9,7 +9,6 @@ const isString = typeIs('string');
 const isBoolean = typeIs('boolean');
 const isNumber = typeIs('number');
 
-
 function isEqual(anyArg) {
   return function(any) {
     return any === anyArg;
@@ -46,6 +45,15 @@ function alwaysTrue() {
   return function(any) {
     return true;
   };
+}
+
+function nullable(anyArg) {
+  if (anyArg === null) {
+    return isEqual(null);
+  }
+  else {
+    return or(null, anyArg);
+  }
 }
 
 function testRegex(regex) {
@@ -106,7 +114,9 @@ function objectValueIs(objArg) {
 const isObject = funcEvery([isTruthy, typeIs('object'), not(Array.isArray)]);
 
 function createValidator(any) {
-  console.log('createValidator', any);
+  if (any === null) {
+    return isEqual(null);
+  }
   if (any instanceof RegExp) {
     return testRegex(any);
   }
@@ -157,6 +167,7 @@ module.exports = {
   isBoolean,
   isNumber,
   isArray,
+  nullable,
   objectValueIs,
   createValidator
 };
