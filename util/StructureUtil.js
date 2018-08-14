@@ -22,6 +22,22 @@ function not(func) {
   };
 }
 
+function or(...rawArgs) {
+  var functions = rawArgs.map(function(arg) {
+    if (isFunc(arg)) {
+      return arg;
+    }
+    else {
+      return isEqual(arg);
+    }
+  });
+  return function(any) {
+    return functions.some(function(func) {
+      return func(any);
+    });
+  };
+}
+
 function isTruthy(any) {
   return !!(any);
 }
@@ -29,6 +45,13 @@ function isTruthy(any) {
 function alwaysTrue() {
   return function(any) {
     return true;
+  };
+}
+
+function testRegex(regex) {
+  console.assert(regex instanceof RegExp);
+  return function(any) {
+    return isString(any) && regex.test(any);
   };
 }
 
@@ -83,7 +106,11 @@ function objectValueIs(objArg) {
 const isObject = funcEvery([isTruthy, typeIs('object'), not(Array.isArray)]);
 
 function createValidator(any) {
-  if (isObject(any)) {
+  console.log('createValidator', any);
+  if (any instanceof RegExp) {
+    return testRegex(any);
+  }
+  else if (isObject(any)) {
     if (Object.keys(any).length === 0) {
       return isObject;
     }
@@ -99,12 +126,19 @@ function createValidator(any) {
       return isEqual(any);
     }
   }
+  else if (isFunc(any)) {
+    return any;
+  }
   else if (isArray(any)) {
     return isArrayParser(any);
+  }
+  else {
+    return any;
   }
 }
 
 function objectValueIsParser(objArg) {
+
   console.assert(isObject(objArg));
   return objectValueIs(Object.keys(objArg).reduce(function(result, key) {
     result[key] = createValidator(objArg[key]);
@@ -118,5 +152,11 @@ function isArrayParser(arrayArg) {
 }
 
 module.exports = {
+  isFunc,
+  isString,
+  isBoolean,
+  isNumber,
+  isArray,
+  objectValueIs,
   createValidator
 };
