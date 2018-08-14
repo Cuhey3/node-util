@@ -1,0 +1,27 @@
+{
+  "name": "node-util",
+  "private": true,
+  "version": "0.0.0",
+  "description": "my node util",
+  "keywords": [],
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "scripts": {
+    "start": "NODE_ENV=production node app.js",
+    "test": "npm run lint && npm run custom-tests && echo 'Done.'",
+    "lint": "eslint . --max-warnings=0 --report-unused-disable-directives && echo '✔  Your .js files look good.'",
+    "custom-tests": "echo \"(No other custom tests yet.)\" && echo"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cuhey3/node-util.git"
+  },
+  "author": "cuhey3",
+  "license": "",
+  "engines": {
+    "node": ">=6.11"
+  }
+}
